@@ -239,7 +239,7 @@ int ntz_epoch_to_tm( int64_t epoch, struct ntz_tm *tm, const struct ntz_iana *ia
   if ( NULL == tm || NULL == iana )
     return ( -1 );
 
-  uint64_t tzoffset_min = iana->offset * 10L;
+  int64_t tzoffset_min = iana->offset * 10L;
   epoch += tzoffset_min * 60;
   int64_t days = epoch / 86400;
   int64_t rem = epoch % 86400;
