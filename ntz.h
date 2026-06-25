@@ -244,6 +244,12 @@ int ntz_epoch_to_tm( int64_t epoch, struct ntz_tm *tm, const struct ntz_iana *ia
   int64_t days = epoch / 86400;
   int64_t rem = epoch % 86400;
 
+  if ( rem < 0 )
+  {
+    rem += 86400;
+    days--;
+  }
+
   int hour = rem / 3600;
   int minute = ( rem % 3600 ) / 60;
   int second = rem % 60;
@@ -371,18 +377,19 @@ int ntz_get_dst_offset_hr( int64_t epoch, const struct ntz_iana *iana )
     return ( 0 );
 
   ntz_epoch_to_tm( epoch, &dat, iana );
-  dst=ntz_dst_offset_hr( &dat, iana );
+  dst = ntz_dst_offset_hr( &dat, iana );
 
-  return(dst);
+  return ( dst );
 }
 
 int ntz_epoch_to_localtime( int64_t epoch, struct ntz_tm *tm, const struct ntz_iana *iana )
 {
-  if(!iana || !tm) return(-1);
-  int dst=ntz_get_dst_offset_hr(epoch, iana);
-  epoch+=dst*60*60;
-  ntz_epoch_to_tm( epoch, tm, iana);
-  return(0);
+  if ( !iana || !tm )
+    return ( -1 );
+  int dst = ntz_get_dst_offset_hr( epoch, iana );
+  epoch += dst * 60 * 60;
+  ntz_epoch_to_tm( epoch, tm, iana );
+  return ( 0 );
 }
 
 #if NTZ_ABBREV == 1
