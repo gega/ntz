@@ -5,6 +5,10 @@
 #define NTZ_ABBREV 0
 #endif
 
+#ifndef NTZ_NAME_API
+#define NTZ_NAME_API 1
+#endif
+
 #include <stdint.h>
 
 
