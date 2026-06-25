@@ -74,7 +74,8 @@ struct ntz_iana
 };
 ```
 
-Contains the timezone hash, standard UTC offset, and DST rule identifier.
+Contains the timezone hash, standard UTC offset (in 10 minutes units), and DST rule identifier.
+The database generator verifies that all included timezone names produce unique 16-bit hashes.
 
 ### `struct ntz_tm`
 
@@ -91,6 +92,7 @@ struct ntz_tm
     int8_t  tm_sec;  /* 0-59 */
 };
 ```
+_NOTE:_ Same convention as C's struct tm. Year 2026 is stored as 126.
 
 ## API Reference
 
@@ -114,12 +116,14 @@ const struct ntz_iana *
 ntz_find_tz_name(const char *name, int len);
 ```
 
-Find a timezone by its IANA name.
+Find a timezone by its IANA name closed with '\n'.
+_NOTE:_ Invalid names can result in valid hash match! Use only valid IANA
+names!
 
 Example:
 
 ```c
-ntz_find_tz_name("America/New_York", 16);
+ntz_find_tz_name("America/New_York\n", 17);
 ```
 
 Available only when `NTZ_NAME_API` is enabled.
@@ -138,7 +142,11 @@ int ntz_day_of_week(
 
 Calculates the day of week for a calendar date.
 
-Returns values `1..7`.
+Returns values `1..7`:
+1 = Sunday
+2 = Monday
+...
+7 = Saturday
 
 ---
 
@@ -167,7 +175,7 @@ int ntz_get_dst_offset_hr(
 );
 ```
 
-Returns the DST adjustment in hours for a given Unix timestamp.
+Returns the DST adjustment in hours for a given Unix timestamp. Expects local standard time produced by ntz_epoch_to_tm().
 
 Typically returns `0` or `1`.
 

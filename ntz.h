@@ -150,6 +150,8 @@ int ntz_check_rule( const char *r )
 
 int ntz_day_of_week( int year, int month, int day )
 {
+  if ( day < 0 || day > 31 || month < 1 || month > 12 )
+    return ( 0 );
   if ( day > 30 )
   {
     if ( month == 4 || month == 6 || month == 9 || month == 11 )
@@ -268,74 +270,45 @@ int ntz_calc_day( int year, int month, char ty, char d1, char d2 )
   return ret;
 }
 
+static void ntz_civil_from_days( int64_t z, int *year, int *month, int *day )
+{
+  z += 719468;
+  int64_t era = ( z >= 0 ? z : z - 146096 ) / 146097;
+  unsigned doe = ( unsigned )( z - era * 146097 );
+  unsigned yoe = ( doe - doe / 1460 + doe / 36524 - doe / 146096 ) / 365;
+  int y = ( int )yoe + ( int )era * 400;
+  unsigned doy = doe - ( 365 * yoe + yoe / 4 - yoe / 100 );
+  unsigned mp = ( 5 * doy + 2 ) / 153;
+  unsigned d = doy - ( 153 * mp + 2 ) / 5 + 1;
+  unsigned m = mp + ( mp < 10 ? 3 : -9 );
+  y += ( m <= 2 );
+  *year = y;
+  *month = m;
+  *day = d;
+}
+
 int ntz_epoch_to_tm( int64_t epoch, struct ntz_tm *tm, const struct ntz_iana *iana )
 {
-  if ( NULL == tm || NULL == iana )
+  if ( !tm || !iana )
     return ( -1 );
-
-  int64_t tzoffset_min = iana->offset * 10L;
-  epoch += tzoffset_min * 60;
+  epoch += ( int64_t ) iana->offset * 600;
   int64_t days = epoch / 86400;
   int64_t rem = epoch % 86400;
-
   if ( rem < 0 )
   {
     rem += 86400;
     days--;
   }
-
-  int hour = rem / 3600;
-  int minute = ( rem % 3600 ) / 60;
-  int second = rem % 60;
-
-  int64_t y = 1970;
-
-  // Number of 400-year cycles
-  int64_t n400 = days / 146097; // 365*400 + 97 leap days
-  y += n400 * 400;
-  days -= n400 * 146097;
-
-  // Number of 100-year cycles
-  int64_t n100 = days / 36524;  // 365*100 + 24 leap days
-  if ( n100 == 4 )
-    n100 = 3;                   // last day of 400-year cycle
-  y += n100 * 100;
-  days -= n100 * 36524;
-
-  // Number of 4-year cycles
-  int64_t n4 = days / 1461;     // 365*4 + 1 leap day
-  y += n4 * 4;
-  days -= n4 * 1461;
-
-  // Remaining years
-  int64_t n1 = days / 365;
-  if ( n1 == 4 )
-    n1 = 3;                     // last day of 4-year cycle
-  y += n1;
-  days -= n1 * 365;
-
-  // Now `days` is 0-based day of year
-  int day_of_year = ( int )days;
-
-  uint8_t month_lengths[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-  int leap = ( y % 4 == 0 && ( y % 100 != 0 || y % 400 == 0 ) );
-  if ( leap )
-    month_lengths[1]++;
-  // find month
-  int month = 0;
-  while ( day_of_year >= month_lengths[month] )
-  {
-    day_of_year -= month_lengths[month];
-    month++;
-  }
-  int day = day_of_year + 1;
-
-  tm->tm_year = y - 1900;
-  tm->tm_mon = month;           // 0..11
-  tm->tm_mday = day;            // 1..31
-  tm->tm_hour = hour;
-  tm->tm_min = minute;
-  tm->tm_sec = second;
+  int year;
+  int month;
+  int day;
+  ntz_civil_from_days( days, &year, &month, &day );
+  tm->tm_year = year - 1900;
+  tm->tm_mon = month - 1;
+  tm->tm_mday = day;
+  tm->tm_hour = rem / 3600;
+  tm->tm_min = ( rem % 3600 ) / 60;
+  tm->tm_sec = rem % 60;
 
   return ( 0 );
 }
