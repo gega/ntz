@@ -1,0 +1,36 @@
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define NTZ_ABBREV 0
+#define NTZ_NAME_API 1
+#define NTZ_IMPLEMENTATION
+#include "ntz.h"
+
+
+int main(int argc, char **argv)
+{
+  static const char days[][3]={"??","SU","MO","TU","WE","TH","FR","SA" };
+  if(argc<3)
+  {
+    printf("Usage: %s iana-timezone epoch\n",argv[0]);
+    return(1);
+  }
+  int len=strlen(argv[1]);
+  argv[1][len]='\n';
+
+  const struct ntz_iana *tz;
+  tz=ntz_find_tz_name(argv[1],len+1);
+  printf("size=%ld\n",sizeof(ntz_db)+sizeof(ntz_rules));
+
+  if(tz!=NULL)
+  {
+    struct ntz_tm tm;
+    ntz_epoch_to_localtime( atoi(argv[2]), &tm, tz );
+    int wd=ntz_day_of_week(tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday );
+    printf("localtime: %4d.%02d.%02d %2d:%02d:%02d %s\n",tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec,days[wd]);
+    printf("offset=%d dst_rule='%s' dst_offset=%dhr\n",10*tz->offset,ntz_rules[tz->dst_rule], ntz_get_dst_offset_hr(atoi(argv[2]),tz));
+  }
+  else printf("not found\n");
+  return(0);
+}
