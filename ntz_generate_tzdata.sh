@@ -147,5 +147,5 @@ value=$(<ntz_minute_offset_defines)
 replace_generated_block "$NTZ_H" "ntz::ntz_minute_offset_defines" "$value"
 
 # cleanup
-#rm -rf $TMP
+rm -rf $TMP
 popd

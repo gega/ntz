@@ -32,9 +32,9 @@ int main(int argc, char **argv)
   localtime_r(&jul1, &tm_jul1);
 
 #ifdef __USE_MISC
-    printf("offset=%d\ndst_rule=n/a\ndst_offset=%dhr\ntz=%s\ntz=%s\n",
+    printf("offset=%d\ndst_rule=n/a\ndst_offset=%dmin\ntz=%s\ntz=%s\n",
         standard_offset,
-        tm.tm_isdst ? 1 : 0,
+        tm.tm_isdst ? 60 : 0,
         tm_jan1.tm_zone,
         tm_jul1.tm_zone);
 #else

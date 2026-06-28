@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     ntz_epoch_to_localtime( atoll(argv[2]), &tm, tz );
     int wd=ntz_day_of_week(tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday );
     printf("localtime=%4d.%02d.%02d %02d:%02d:%02d %s\n",tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec,days[wd]);
-    printf("offset=%d\ndst_rule='%s'\ndst_offset=%dhr\ntz=%s\n",ntz_minute_offsets[tz->offset],ntz_rules[tz->dst_rule], ntz_get_dst_offset_hr(atoi(argv[2]),tz),
+    printf("offset=%d\ndst_rule='%s'\ndst_offset=%dmin\ntz=%s\n",ntz_minute_offsets[tz->offset],ntz_rules[tz->dst_rule], ntz_get_dst_offset_min(atoll(argv[2]),tz),
                                                                             ntz_abbrev[tz->abbrev]);
   }
   else printf("not found\n");

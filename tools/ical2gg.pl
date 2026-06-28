@@ -71,6 +71,12 @@ sub process($)
   return($mon.$typ.$d1.$d2);
 }
 
+sub parse_offset($)
+{
+  # parse offset like +0000 or -1130 to minutes
+  return( (int($_[0]/100))*60 + (int($_[0])%100) );
+}
+
 #print process("FREQ=YEARLY;BYMONTH=10;BYDAY=1SA")."\n";
 #exit 0;
 
@@ -133,12 +139,13 @@ LINE: while(defined($line=<>))
     #print $cur_dstart."\n";
     if($fin_dstart{$mode}<$cur_dstart&&$now>=$cur_dstart)
     {
-      #print "cs ".$cur_rrule."\n";
+      #print "cs ".$cur_rrule." [".$mode."]\n";
       $fin_dstart{$mode}=$cur_dstart;
       $fin_rrule{$mode}=$cur_rrule;
       @{$fin_rdate{$mode}}=@cur_rdate;
       $fin_tzfrom{$mode}=$cur_tzfrom;
       $fin_tzto{$mode}=$cur_tzto;
+      #print "cs tzfrom=".parse_offset($cur_tzfrom)." tzto=".parse_offset($cur_tzto)."\n";
     }
     $cur_dstart=-1;
     @cur_rdate=();
@@ -185,7 +192,18 @@ elsif(length $fin_rrule{'STANDARD'}>3)
   if(/BYDAY/) { 
     $when="c"; # a=0 b=1 c=2
     if($loc=~/America/) { $when="b"; }
-    print "1".$when.process($_).process($fin_rrule{'DAYLIGHT'})."\n"; 
+    $std = parse_offset($fin_tzto{'STANDARD'});
+    $day = parse_offset($fin_tzto{'DAYLIGHT'});
+    $save = $day - $std;
+    #print "std:".$std." day:".$day." save:".$save."\n";
+    die "unsupported DST adjustment" unless (0 == ($save % 30));
+    $savestp = abs( $save / 30);
+    if($save<0) {
+      print chr(ord('a')+int($savestp)-1);
+    } elsif($save>0) {
+      print chr(ord('0')+int($savestp));
+    } else { print "0"; }
+    print $when.process($_).process($fin_rrule{'DAYLIGHT'})."\n"; 
   }
   else { print "0---------\n"; }
   }
