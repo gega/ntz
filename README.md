@@ -166,25 +166,25 @@ DST is not applied.
 
 ---
 
-### `ntz_get_dst_offset_hr()`
+### `ntz_get_dst_offset_min()`
 
 ```c
-int ntz_get_dst_offset_hr(
+int ntz_get_dst_offset_min(
     int64_t epoch,
     const struct ntz_iana *iana
 );
 ```
 
-Returns the DST adjustment in hours for a given Unix timestamp. Expects local standard time produced by ntz_epoch_to_tm().
+Returns the DST adjustment in minutes for a given Unix timestamp. Expects local standard time produced by ntz_epoch_to_tm().
 
 Typically returns `0` or `1`.
 
 ---
 
-### `ntz_dst_offset_hr()`
+### `ntz_dst_offset_min()`
 
 ```c
-int ntz_dst_offset_hr(
+int ntz_dst_offset_min(
     struct ntz_tm *tm,
     const struct ntz_iana *iana
 );
