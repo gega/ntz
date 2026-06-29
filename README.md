@@ -223,4 +223,36 @@ ntz_epoch_to_localtime(
 );
 ```
 
+## Generator Tool
+
+The repository includes a helper script that updates `ntz.h` with the latest IANA Time Zone Database. The script downloads the current tzdata release directly from IANA, converts it into the compact internal representation used by NTZ, regenerates all lookup tables, and replaces the generated sections inside `ntz.h` while leaving the manually written code untouched.
+
+### Usage
+
+```sh
+.ntz_generate_tzdata.sh path/to/ntz.h
+```
+
+The script expects a single argument: the path to the `ntz.h` file to update. If the generation completes successfully, the file is modified in place.
+
+### What the script does
+
+* Downloads the latest IANA Time Zone Database.
+* Converts the IANA data to iCalendar format using `vzic` (from the `libical` submodule).
+* Generates the compact DST rule database used by NTZ.
+* Extracts timezone abbreviations and standard UTC offsets.
+* Computes a collision-free 16-bit hash mapping for all IANA timezone names.
+* Regenerates all generated lookup tables and definitions.
+* Replaces the corresponding generated blocks inside `ntz.h`.
+
+### Requirements
+
+Before running the generator:
+
+* Initialize and update the repository submodules (`libical` is required).
+* Ensure common Unix tools are available, including `bash`, `curl`, `awk`, `perl`, `sed`, `find`, `sort`, `uniq`, `cut`, `dos2unix`, `make`, and either `sha1sum` (default) or another compatible hash utility if the script is modified.
+
+The first run will automatically build `vzic` if it has not already been compiled.
+
+
 The resulting `tm` structure contains the local date and time with timezone and DST corrections applied.
