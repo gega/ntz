@@ -116,7 +116,8 @@ const struct ntz_iana *
 ntz_find_tz_name(const char *name, int len);
 ```
 
-Find a timezone by its IANA name closed with '\n'.
+Find a timezone by its IANA name.
+
 _NOTE:_ Invalid names can result in valid hash match! Use only valid IANA
 names!
 
