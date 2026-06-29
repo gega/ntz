@@ -15,8 +15,8 @@ The library is designed for microcontrollers, wearables, IoT devices, and other 
 * No external dependencies
 * Small footprint:
 
-  * ~2.5 KB database without timezone abbreviations
-  * ~3.6 KB database with abbreviations enabled
+  * ~2.7 KB database without timezone abbreviations
+  * ~4.4 KB database with abbreviations enabled
 * Optimized for embedded firmware
 
 ## Quick Start
