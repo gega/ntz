@@ -2,7 +2,7 @@
 
 Nano IANA timezone library for embedded systems.
 
-`ntz` is a single-header, heap-free timezone library that provides compact support for nearly 600 IANA timezones, including automatic daylight saving time (DST) handling.
+`ntz` is a single-header, heap-free timezone library that provides compact support for the current ruleset of nearly 600 IANA timezones, including automatic daylight saving time (DST) handling.
 
 The library is designed for microcontrollers, wearables, IoT devices, and other memory-constrained systems that need local time conversion from Unix timestamps.
 
