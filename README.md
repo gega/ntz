@@ -123,7 +123,7 @@ names!
 Example:
 
 ```c
-ntz_find_tz_name("America/New_York\n", 17);
+ntz_find_tz_name("America/New_York", 17);
 ```
 
 Available only when `NTZ_NAME_API` is enabled.
