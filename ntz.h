@@ -62,6 +62,7 @@ struct ntz_tm
 #define NTZ_HASH_SHIFT (3)
 #define NTZ_HASH "sha1sum"
 #define NTZ_TZDATA_VERSION "2026b"
+#define NTZ_GMT_HASH 0x02be
 /* }ntz::defines -- generated code do not touch */
 
 #define ntz_get_rule(iana) ntz_rules[(iana)->dst_rule]

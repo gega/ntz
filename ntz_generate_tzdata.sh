@@ -105,6 +105,7 @@ if [ $hashoffs -gt $hashmax ]; then
   exit 1
 fi
 ls -1 out|awk '{print "echo -en \"$(echo " $1 "|tr \"@\" \"/\")\" |'$HASH'|cut -c'$cutoff1'-'$cutoff2' > hash/" $1}'|bash
+GMT_HASH=$(echo -en "Greenwich"|$HASH|cut -c$cutoff1-$cutoff2)
 
 echo "Calculating TZ offsets"
 rm -rf offs
@@ -116,6 +117,7 @@ ls -1 out|dos2unix|awk '{print $1 " >offs/m" $1}'|sed -e "s#^#awk -F '' '{ m=(\$
 echo "Generating code snippets"
 echo -e "#define NTZ_HASH_SHIFT (${hashoffs})\n#define NTZ_HASH \"${HASH}\"" >defines
 echo "#define NTZ_TZDATA_VERSION \"$(cat tzdata/version)\"" >>defines
+echo "#define NTZ_GMT_HASH 0x$GMT_HASH" >>defines
 cat RULES|tr '@-' '__'|awk '{print "  RULE_" $1 ","}' >enum_ntz_rulelist
 paste enum_ntz_rulelist RULES|awk '{print "  [" $1 "] = \"" $2 "\""}'|tr -d ','|sed 's/$/,/g' >const_char_ntz_rules
 rm -f RULES
