@@ -65,6 +65,10 @@ struct ntz_tm
 /* }ntz::defines -- generated code do not touch */
 
 #define ntz_get_rule(iana) ntz_rules[(iana)->dst_rule]
+#define ntz_get_offset(iana) ntz_minute_offsets[(iana)->offset]
+#if NTZ_ABBREV == 1
+#define ntz_get_abbrev(iana) ntz_abbrev[(iana)->abbrev]
+#endif
 
 const struct ntz_iana *ntz_find_tz_key( uint16_t key );
 #if NTZ_NAME_API == 1
