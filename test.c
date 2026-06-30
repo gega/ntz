@@ -20,7 +20,6 @@ int main(int argc, char **argv)
 
   const struct ntz_iana *tz;
   tz=ntz_find_tz_name(argv[1],len);
-  //printf("size=%ld\n",sizeof(ntz_db)+sizeof(ntz_rules));
 
   if(tz!=NULL)
   {
@@ -29,6 +28,8 @@ int main(int argc, char **argv)
     printf("localtime=%4d.%02d.%02d %02d:%02d:%02d %s\n",tm.tm_year+1900,tm.tm_mon+1,tm.tm_mday,tm.tm_hour,tm.tm_min,tm.tm_sec,days[tm.tm_wday]);
     printf("offset=%d\ndst_rule='%s'\ndst_offset=%dmin\ntz=%s\n",ntz_minute_offsets[tz->offset],ntz_rules[tz->dst_rule], ntz_get_dst_offset_min(atoll(argv[2]),tz),
                                                                             ntz_abbrev[tz->abbrev]);
+    int64_t t=ntz_mktime(&tm, tz);
+    if(t!=atoll(argv[2])) printf("FAIL! %lld != %ld from mktime\n",atoll(argv[2]), t);
   }
   else printf("not found\n");
 

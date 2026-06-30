@@ -66,6 +66,8 @@ struct ntz_tm
 #define NTZ_GMT_HASH 0x02be
 /* }ntz::defines -- generated code do not touch */
 
+#define NTZ_IS_LEAP(n) (((n) % 400 == 0) ? 1 : ((n) % 4 == 0) ? ((n) % 100 != 0) : 0 ? 1 : 0)
+
 #define ntz_get_rule(iana) ntz_rules[(iana)->dst_rule]
 #define ntz_get_offset(iana) ntz_minute_offsets[(iana)->offset]
 #if NTZ_ABBREV == 1
@@ -81,6 +83,7 @@ int ntz_epoch_to_tm( int64_t epoch, struct ntz_tm *tm, const struct ntz_iana *ia
 int ntz_get_dst_offset_min( int64_t epoch, const struct ntz_iana *iana );
 int ntz_dst_offset_min( struct ntz_tm *tm, const struct ntz_iana *iana );
 int ntz_epoch_to_localtime( int64_t epoch, struct ntz_tm *tm, const struct ntz_iana *iana );
+int64_t ntz_mktime(const struct ntz_tm *tm, const struct ntz_iana *iana);
 
 #endif
 
@@ -92,6 +95,8 @@ int ntz_epoch_to_localtime( int64_t epoch, struct ntz_tm *tm, const struct ntz_i
 
 #define NTZ_DECODE_INT(c) ( ((c)>='a'&&(c)<='z') ? (-1*((c)-'a'+1)) : ( ((c)>='0'&&(c)<='9') ? ((c)-'0')    : 0 ) )
 #define NTZ_DECODE_DAY(c) ( ((c)>='a'&&(c)<='z') ? ((c)-'a'+1)      : ( ((c)>='0'&&(c)<='4') ? ((c)-'0'+27) : 0 ) )
+
+const static int8_t ntz_daysofmonths[]={1,-2,1,0, 1,0,1,1, 0,1,0,1};
 
 enum ntz_rulelist
 {
@@ -219,36 +224,6 @@ const static int16_t ntz_minute_offsets[]=
   [NTZ_OFFSET_p840] = +840,
 /* }ntz::ntz_minute_offsets -- generated code do not touch */
 };
-
-int ntz_check_rule( const char *r )
-{
-  if ( NULL == r )
-    return 0;
-  if ( strlen( r ) != 10 )
-    return 0;
-  if ( r[0] == '0' )
-    return 1;
-  int f = NTZ_DECODE_INT( r[0] );
-  if ( f < -3 || f > 3 )
-    return 0;
-  f = NTZ_DECODE_DAY( r[1] ) - 1;
-  if ( f < 0 || f > 24 )
-    return 0;
-  int ret = 1;
-  int n = 2;
-  const char *codes = "DXA";
-  for ( int i = 0; i < 2; i++ )
-  {
-    f = ( ( int )r[n] ) - ( int )'A';
-    if ( f < 0 || f > 12 )
-      ret = 0;
-    n++;
-    if ( strchr( codes, r[n] ) == NULL )
-      ret = 0;
-    n += 3;
-  }
-  return ret;
-}
 
 int ntz_day_of_week(int year, int month, int day)
 {
@@ -380,8 +355,6 @@ int ntz_dst_offset_min( struct ntz_tm *tm, const struct ntz_iana *iana )
   if ( !iana || !tm )
     return ( 0 );
   const char *rule = ntz_get_rule( iana );
-  if ( !ntz_check_rule( rule ) )
-    return ( 0 );
   if ( rule[0] == '0' )
     return 0;
   int offset = NTZ_DECODE_INT( rule[0] )*30;
@@ -457,6 +430,37 @@ int ntz_epoch_to_localtime( int64_t epoch, struct ntz_tm *tm, const struct ntz_i
   epoch += dst * 60;
   ntz_epoch_to_tm( epoch, tm, iana );
   return ( 0 );
+}
+
+#define NTZ_LEAP_FROMZERO(year) ( (year) / 4LL - (year) / 100LL + (year) / 400LL )
+#define NTZ_LEAP_BETWEEN(y1, y2) (NTZ_LEAP_FROMZERO(y2) - NTZ_LEAP_FROMZERO(y1-1))
+#define NTZ_SECS_IN_DAY (int64_t)(24*60*60)
+#define NTZ_SECS_IN_YEAR (365*NTZ_SECS_IN_DAY)
+#define NTZ_MONTH_TO_DAYS(tm_mon,leap) ((ntz_daysofmonths[(tm_mon)]+30)+((tm_mon)==1?leap:0))
+#define NTZ_INVALID_EPOCH (-3786883621LL)
+
+int64_t ntz_mktime(const struct ntz_tm *tm, const struct ntz_iana *iana)
+{
+  if(!tm || !iana) return(NTZ_INVALID_EPOCH);
+  int year = tm->tm_year+1900;
+  int month = tm->tm_mon;
+  if (month > 11 || month < 0) return(NTZ_INVALID_EPOCH);
+  int is_leap=NTZ_IS_LEAP(year);
+  int64_t t;
+  if(year>=1970) t =  1 * ( NTZ_LEAP_BETWEEN(1970, year-1) * NTZ_SECS_IN_DAY + NTZ_SECS_IN_YEAR * (year-1970) );
+  else           t = -1 * ( NTZ_LEAP_BETWEEN(year, 1970-1) * NTZ_SECS_IN_DAY + NTZ_SECS_IN_YEAR * (1970-year) );
+  for(--month;month>=0;--month) t += 24 * 60 * 60 * NTZ_MONTH_TO_DAYS(month, is_leap);
+  t += 86400 * (tm->tm_mday-1);
+  t += 3600 * tm->tm_hour;
+  t += 60 * tm->tm_min;
+  t += tm->tm_sec;
+  
+  // t is a localtime in epoch format
+  t -= 60 * ntz_get_offset(iana);
+  int dst_offset = ntz_get_dst_offset_min(t, iana);
+  t -= 60 * dst_offset;
+
+  return(t);
 }
 
 #if NTZ_ABBREV == 1
