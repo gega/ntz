@@ -56,6 +56,7 @@ struct ntz_tm
   int8_t tm_hour;
   int8_t tm_min;
   int8_t tm_sec;
+  int8_t tm_wday; /* Day of the week  [0, 6]   (Sunday = 0) */
 };
 
 /* {ntz::defines -- generated code do not touch */
@@ -370,7 +371,7 @@ int ntz_epoch_to_tm( int64_t epoch, struct ntz_tm *tm, const struct ntz_iana *ia
   tm->tm_hour = rem / 3600;
   tm->tm_min = ( rem % 3600 ) / 60;
   tm->tm_sec = rem % 60;
-
+  tm->tm_wday = ntz_day_of_week( year, month, day);
   return ( 0 );
 }
 
