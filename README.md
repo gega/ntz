@@ -8,15 +8,19 @@ The library is designed for microcontrollers, wearables, IoT devices, and other 
 
 ## Features
 
-* Supports ~600 IANA timezone identifiers
+* Supports nearly 600 IANA timezone identifiers
 * Automatic DST calculation
+* Unix timestamp ↔ local calendar time conversion
+* Day-of-week calculation
 * Single-header library (`#define NTZ_IMPLEMENTATION`)
 * No dynamic memory allocation
 * No external dependencies
-* Small footprint:
+* No historic timezone support
+* Small footprint
 
   * ~2.7 KB database without timezone abbreviations
   * ~4.4 KB database with abbreviations enabled
+
 * Optimized for embedded firmware
 
 ## Quick Start
@@ -90,8 +94,10 @@ struct ntz_tm
     int8_t  tm_hour; /* 0-23 */
     int8_t  tm_min;  /* 0-59 */
     int8_t  tm_sec;  /* 0-59 */
+    int8_t  tm_wday; /* 0-6 (Sunday = 0) */
 };
 ```
+
 _NOTE:_ Same convention as C's struct tm. Year 2026 is stored as 126.
 
 ## API Reference
@@ -140,14 +146,14 @@ int ntz_day_of_week(
     int day
 );
 ```
-
 Calculates the day of week for a calendar date.
 
-Returns values `1..7`:
-1 = Sunday
-2 = Monday
-...
-7 = Saturday
+Returns values `0..6`:
+
+* `0` = Sunday
+* `1` = Monday
+* ...
+* `6` = Saturday
 
 ---
 
@@ -161,9 +167,8 @@ int ntz_epoch_to_tm(
 );
 ```
 
-Converts a Unix timestamp into local standard time using the timezone's base UTC offset.
-
-DST is not applied.
+Converts a Unix timestamp into local standard time using the timezone's standard UTC offset. The resulting ntz_tm also contains the calculated weekday.
+_NOTE:_ DST is not applied.
 
 ---
 
@@ -176,9 +181,9 @@ int ntz_get_dst_offset_min(
 );
 ```
 
-Returns the DST adjustment in minutes for a given Unix timestamp. Expects local standard time produced by ntz_epoch_to_tm().
+Returns the daylight saving adjustment, in minutes, for a given Unix timestamp. The timestamp is interpreted as local standard time (typically produced by ntz_epoch_to_tm()).
 
-Typically returns `0` or `1`.
+Most timezones return 0 or 60, although other values (such as 30) are possible.
 
 ---
 
@@ -205,9 +210,28 @@ int ntz_epoch_to_localtime(
 );
 ```
 
-Converts a Unix timestamp into fully adjusted local time, including DST.
+Converts a Unix timestamp into fully adjusted local time, including daylight saving time. The resulting ntz_tm also contains the calculated weekday.
 
 This is the function most applications should use.
+
+---
+
+---
+
+### `ntz_mktime()`
+
+```c
+int64_t ntz_mktime(
+    const struct ntz_tm *tm,
+    const struct ntz_iana *iana
+);
+```
+
+Converts a local calendar time into a Unix timestamp.
+
+The supplied `ntz_tm` is interpreted as local time in the specified timezone, including daylight saving time when applicable.
+
+Returns the corresponding Unix timestamp.
 
 ## Typical Workflow
 
@@ -222,7 +246,14 @@ ntz_epoch_to_localtime(
     &tm,
     tz
 );
+
+/* ... modify tm if desired ... */
+
+int64_t new_epoch =
+    ntz_mktime(&tm, tz);
 ```
+
+`ntz_epoch_to_localtime()` converts a Unix timestamp into local calendar time, while `ntz_mktime()` performs the reverse conversion.
 
 ## Generator Tool
 
