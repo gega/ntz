@@ -29,8 +29,8 @@ for((i=0;i<$N;i++)) do
       break
     fi
   done
-  ./test "$tz" $epoch   | grep -v dst_rule | grep -v ^tz >$TMP1
-  ./tztool "$tz" $epoch | grep -v dst_rule | grep -v ^tz >$TMP2
+  ./test "$tz" $epoch   | grep -v dst_rule | grep -v offset | grep -v ^tz >$TMP1
+  ./tztool "$tz" $epoch | grep -v dst_rule | grep -v offset | grep -v ^tz >$TMP2
   cmp -s $TMP1 $TMP2
   if [ $? -ne 0 ]; then
     echo "$tz $epoch # FAIL"

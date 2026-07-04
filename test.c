@@ -30,6 +30,7 @@ int main(int argc, char **argv)
                                                                             ntz_abbrev[tz->abbrev]);
     int64_t t=ntz_mktime(&tm, tz);
     if(t!=atoll(argv[2])) printf("FAIL! %lld != %ld from mktime\n",atoll(argv[2]), t);
+    //printf("sec2switch=%d\n",ntz_seconds_to_switch(atoll(argv[2]), tz));
   }
   else printf("not found\n");
 
