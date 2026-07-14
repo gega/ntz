@@ -1574,4 +1574,83 @@ const struct ntz_iana *ntz_find_tz_name(const char *name, int len)
 
 #endif
 
+/* {ntz::define_undef_abbrev -- generated code do not touch */
+#undef p00 
+#undef p01 
+#undef m01 
+#undef p02 
+#undef m02 
+#undef p03 
+#undef m03 
+#undef p0330 
+#undef p04 
+#undef m04 
+#undef p0430 
+#undef p05 
+#undef m05 
+#undef p0530 
+#undef p0545 
+#undef p06 
+#undef m06 
+#undef p0630 
+#undef p07 
+#undef m07 
+#undef p08 
+#undef m08 
+#undef p0845 
+#undef p09 
+#undef m09 
+#undef m0930 
+#undef p10 
+#undef m10 
+#undef p11 
+#undef m11 
+#undef p12 
+#undef m12 
+#undef p13 
+#undef p1345 
+#undef p14 
+#undef ACST 
+#undef ADT 
+#undef AEDT 
+#undef AEST 
+#undef AKDT 
+#undef AST 
+#undef AWST 
+#undef BST 
+#undef CAT 
+#undef CDT 
+#undef CET 
+#undef ChST 
+#undef CST 
+#undef EAT 
+#undef EDT 
+#undef EET 
+#undef EST 
+#undef GMT 
+#undef HDT 
+#undef HKT 
+#undef HST 
+#undef IDT 
+#undef IST 
+#undef JST 
+#undef KST 
+#undef MDT 
+#undef MSK 
+#undef MST 
+#undef NST 
+#undef NZDT 
+#undef PDT 
+#undef PKT 
+#undef PST 
+#undef SAST 
+#undef SST 
+#undef UTC 
+#undef WAT 
+#undef WET 
+#undef WIB 
+#undef WIT 
+#undef WITA 
+/* }ntz::define_undef_abbrev -- generated code do not touch */
+
 #endif

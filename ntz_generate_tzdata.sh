@@ -126,6 +126,7 @@ cat offs/m*|sort -n|uniq|dos2unix|awk '{o=$1; gsub("+","p",o); gsub("-","m",o); 
 cat abr/*  |sort   |uniq|dos2unix|sed -e 's/$/\",/g' -e 's/^/  \"/g' >const_char_ntz_abbrev
 cat abr/*  |sort   |uniq|dos2unix|tr '+-' 'pm'|cat -n|awk '{print "#define " $2 " " $1-1 ","}' >define_abbrev
 cat abr/*  |sort   |uniq|dos2unix|tr '+-' 'pm'|cat -n|awk '{print "#define " $2 " " }' >define_empty_abbrev
+cat abr/*  |sort   |uniq|dos2unix|tr '+-' 'pm'|cat -n|awk '{print "#undef " $2 " " }' >define_undef_abbrev
 ls -1 out|awk '{print "echo \"  {0x$(cat hash/" $1 "), $(cat abr/" $1 "|dos2unix|tr \"+-\" \"pm\") NTZ_OFFSET_$(cat offs/m" $1 "|tr \"+-\" \"pm\"), RULE_$(cat out/" $1 "|tr \"@-\" \"__\")},\t// $(echo \"" $1 "\"|tr \"@\" \"/\")\""}'|bash|sort > const_struct_ntz_iana_ntz_db
 
 # Template code to src
@@ -147,6 +148,8 @@ value=$(<ntz_minute_offsets)
 replace_generated_block "$NTZ_H" "ntz::ntz_minute_offsets" "$value"
 value=$(<ntz_minute_offset_defines)
 replace_generated_block "$NTZ_H" "ntz::ntz_minute_offset_defines" "$value"
+value=$(<define_undef_abbrev)
+replace_generated_block "$NTZ_H" "ntz::define_undef_abbrev" "$value"
 
 # cleanup
 rm -rf $TMP
