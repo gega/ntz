@@ -63,7 +63,7 @@ struct ntz_tm
 /* {ntz::defines -- generated code do not touch */
 #define NTZ_HASH_SHIFT (3)
 #define NTZ_HASH "sha1sum"
-#define NTZ_TZDATA_VERSION "2026c"
+#define NTZ_TZDATA_VERSION "2026e"
 #define NTZ_GMT_HASH 0x02be
 /* }ntz::defines -- generated code do not touch */
 
@@ -961,7 +961,7 @@ const struct ntz_iana ntz_db[] = {
   {0x588f, p07 NTZ_OFFSET_p420, RULE_0_________},	// Asia/Bangkok
   {0x5895, PDT NTZ_OFFSET_m480, RULE_2bKD11CD21},	// US/Pacific
   {0x58c3, m03 NTZ_OFFSET_m180, RULE_0_________},	// America/Argentina/Buenos_Aires
-  {0x5921, CDT NTZ_OFFSET_m360, RULE_2bKD11CD21},	// America/Winnipeg
+  {0x5921, EST NTZ_OFFSET_m300, RULE_0_________},	// America/Winnipeg
   {0x5a3c, CST NTZ_OFFSET_p480, RULE_0_________},	// Asia/Shanghai
   {0x5a44, MST NTZ_OFFSET_m420, RULE_0_________},	// MST
   {0x5c36, AEST NTZ_OFFSET_p600, RULE_2cDD11JD11},	// Australia/ACT
@@ -991,7 +991,7 @@ const struct ntz_iana ntz_db[] = {
   {0x648b, AEST NTZ_OFFSET_p600, RULE_2cDD11JD11},	// Australia/Melbourne
   {0x648d, ADT NTZ_OFFSET_m240, RULE_2bKD11CD21},	// Canada/Atlantic
   {0x6523, p12 NTZ_OFFSET_p720, RULE_0_________},	// Pacific/Wake
-  {0x6543, CDT NTZ_OFFSET_m360, RULE_2bKD11CD21},	// Canada/Central
+  {0x6543, EST NTZ_OFFSET_m300, RULE_0_________},	// Canada/Central
   {0x65c2, ChST NTZ_OFFSET_p600, RULE_0_________},	// Pacific/Guam
   {0x65fa, m01 NTZ_OFFSET_m60, RULE_0_________},	// Atlantic/Cape_Verde
   {0x66ac, AST NTZ_OFFSET_m240, RULE_0_________},	// America/St_Barthelemy
@@ -1000,7 +1000,7 @@ const struct ntz_iana ntz_db[] = {
   {0x67cc, p06 NTZ_OFFSET_p360, RULE_0_________},	// Asia/Bishkek
   {0x69c9, CAT NTZ_OFFSET_p120, RULE_0_________},	// Africa/Lusaka
   {0x6a0c, m05 NTZ_OFFSET_m300, RULE_0_________},	// America/Guayaquil
-  {0x6bbc, CDT NTZ_OFFSET_m360, RULE_2bKD11CD21},	// America/Rainy_River
+  {0x6bbc, EST NTZ_OFFSET_m300, RULE_0_________},	// America/Rainy_River
   {0x6c0d, p11 NTZ_OFFSET_p660, RULE_0_________},	// Pacific/Kosrae
   {0x6c36, m04 NTZ_OFFSET_m240, RULE_0_________},	// America/Manaus
   {0x6c41, CET NTZ_OFFSET_p60, RULE_2cJDa1CDa1},	// CET
@@ -1043,7 +1043,7 @@ const struct ntz_iana ntz_db[] = {
   {0x7acc, MST NTZ_OFFSET_m420, RULE_0_________},	// America/Creston
   {0x7af3, CST NTZ_OFFSET_p480, RULE_0_________},	// Asia/Macau
   {0x7b7d, AST NTZ_OFFSET_m240, RULE_0_________},	// America/Lower_Princes
-  {0x7b86, MDT NTZ_OFFSET_m420, RULE_2bKD11CD21},	// America/Inuvik
+  {0x7b86, CST NTZ_OFFSET_m360, RULE_0_________},	// America/Inuvik
   {0x7be9, m05 NTZ_OFFSET_m300, RULE_0_________},	// America/Porto_Acre
   {0x7c42, CDT NTZ_OFFSET_m360, RULE_2bKD11CD21},	// America/Ojinaga
   {0x7c4c, p03 NTZ_OFFSET_p180, RULE_0_________},	// Etc/GMT-3
@@ -1062,7 +1062,7 @@ const struct ntz_iana ntz_db[] = {
   {0x8023, p11 NTZ_OFFSET_p660, RULE_0_________},	// Asia/Magadan
   {0x805f, WAT NTZ_OFFSET_p60, RULE_0_________},	// Africa/Luanda
   {0x80e9, WAT NTZ_OFFSET_p60, RULE_0_________},	// Africa/Libreville
-  {0x80ec, PDT NTZ_OFFSET_m480, RULE_2bKD11CD21},	// PST8PDT
+  {0x80ec, PDT NTZ_OFFSET_m480, RULE_2cKD11CD21},	// PST8PDT
   {0x8136, KST NTZ_OFFSET_p540, RULE_0_________},	// ROK
   {0x8146, p11 NTZ_OFFSET_p630, RULE_1cDD11JD11},	// Australia/LHI
   {0x8193, AEST NTZ_OFFSET_p600, RULE_2cDD11JD11},	// Australia/Canberra
@@ -1073,7 +1073,7 @@ const struct ntz_iana ntz_db[] = {
   {0x83c0, EST NTZ_OFFSET_m300, RULE_0_________},	// America/Cancun
   {0x83d1, m01 NTZ_OFFSET_m60, RULE_0_________},	// Etc/GMT+1
   {0x84df, p05 NTZ_OFFSET_p300, RULE_0_________},	// Indian/Maldives
-  {0x84e4, MDT NTZ_OFFSET_m420, RULE_2bKD11CD21},	// MST7MDT
+  {0x84e4, MDT NTZ_OFFSET_m420, RULE_2cKD11CD21},	// MST7MDT
   {0x8530, m03 NTZ_OFFSET_m180, RULE_0_________},	// America/Maceio
   {0x8605, p03 NTZ_OFFSET_p180, RULE_0_________},	// Antarctica/Syowa
   {0x860e, m03 NTZ_OFFSET_m180, RULE_0_________},	// America/Argentina/La_Rioja
@@ -1187,7 +1187,7 @@ const struct ntz_iana ntz_db[] = {
   {0xb64a, CET NTZ_OFFSET_p60, RULE_2cJDa1CDa1},	// Europe/Madrid
   {0xb6d0, CET NTZ_OFFSET_p60, RULE_2cJDa1CDa1},	// Europe/San_Marino
   {0xb6f8, EET NTZ_OFFSET_p120, RULE_2cJDa6DDa6},	// Africa/Cairo
-  {0xb72b, CDT NTZ_OFFSET_m360, RULE_2bKD11CD21},	// CST6CDT
+  {0xb72b, CDT NTZ_OFFSET_m360, RULE_2cKD11CD21},	// CST6CDT
   {0xb72d, p04 NTZ_OFFSET_p240, RULE_0_________},	// Asia/Tbilisi
   {0xb77e, m03 NTZ_OFFSET_m180, RULE_0_________},	// America/Argentina/San_Luis
   {0xb795, m04 NTZ_OFFSET_m240, RULE_0_________},	// America/Boa_Vista
@@ -1307,7 +1307,7 @@ const struct ntz_iana ntz_db[] = {
   {0xea45, m06 NTZ_OFFSET_m360, RULE_2cDD17ID17},	// Chile/EasterIsland
   {0xebf4, HKT NTZ_OFFSET_p480, RULE_0_________},	// Asia/Hong_Kong
   {0xedeb, EAT NTZ_OFFSET_p180, RULE_0_________},	// Indian/Mayotte
-  {0xee15, EDT NTZ_OFFSET_m300, RULE_2bKD11CD21},	// EST5EDT
+  {0xee15, EDT NTZ_OFFSET_m300, RULE_2cKD11CD21},	// EST5EDT
   {0xeec9, WAT NTZ_OFFSET_p60, RULE_0_________},	// Africa/Ndjamena
   {0xeefb, EET NTZ_OFFSET_p120, RULE_2cJDa1CDa1},	// Europe/Nicosia
   {0xef8e, SAST NTZ_OFFSET_p120, RULE_0_________},	// Africa/Maseru
